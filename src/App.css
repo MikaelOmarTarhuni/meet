@@ -4,6 +4,7 @@
   padding: 2% 5%;
 }
 
+
 .App * {
   box-sizing: border-box;
 }
@@ -40,7 +41,7 @@ input[type="number"] {
   width: 250px;
 }
 
-.CitySearch {
+.search {
   display: flex;
   flex-direction: column;
   flex-basis: 300px;
@@ -89,11 +90,12 @@ input[type="number"] {
   position: absolute;
   right: 5px;
   bottom: 5px;
-  padding: 5px 8px;
+  /* padding: 5px 8px; */
   border-radius: 4px;
   outline: none;
   cursor: pointer;
 }
+
 
 .name {
   font-size: 18px;

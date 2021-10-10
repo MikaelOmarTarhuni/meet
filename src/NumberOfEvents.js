@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Form from 'react-bootstrap/Form';
 
 class NumberOfEvents extends Component {
 
@@ -9,19 +10,22 @@ class NumberOfEvents extends Component {
   handleInputChanged = (event) => {
     const value = event.target.value;
     this.setState({ 
-      query: value,
+      eventCount: value,
     });
+    this.props.updateEvents(value);
   };
 
   render() { 
     return (
-      <div className="NumberOfEvents">
-        <input 
-        type="text" 
-        className="numberOfEventsInput" 
-        value={this.state.query} 
-        onChange={this.handleInputChanged} />
-      </div>
+      <Form.Group className='numberOfEvents mb-3'>
+          <Form.Label size="sm">Number of Events:</Form.Label>
+        <Form.Control size="sm"
+          type="number"
+          className='event-number'
+          value={this.props.input}
+          onChange={this.props.handleChange}
+        />
+      </Form.Group>
     );
   }
 }

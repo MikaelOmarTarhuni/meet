@@ -1,30 +1,39 @@
-import { shallow } from 'enzyme';
-import React from 'react';
-import NumberOfEvents from '../NumberOfEvents';
+import React, { Component } from 'react';
+import Form from 'react-bootstrap/Form';
 
-describe('<NumberOfEvents /> component', () => {
+class NumberOfEvents extends Component {
+  state = {
+    numberOfEvents: 32
+  }
 
-  let NumberOfEventsWrapper;
-  beforeAll(() => {
-    NumberOfEventsWrapper = shallow(<NumberOfEvents />);
-  });
+  handleChange = (event) => {
+    // console.log('handleChange event', event)
+    const value = event.target.value;
+    this.setState({ 
+      numberOfEvents: value,
+     });
+     this.props.updateEvents(null, value);
+     console.log('handleChange numberOfEvents', value)
+  }
 
-  test('render text input', () => {
-    expect(NumberOfEventsWrapper.find('.numberOfEventsInput')).toHaveLength(1);
-  });
 
-  test('redner text input correcty', () => {
-    const query = NumberOfEventsWrapper.state('query');
-    expect(NumberOfEventsWrapper.find('.numberOfEventsInput').prop('value')).toBe(query);
-  });
+  render() {
+    const { numberOfEvents } = this.state
+    return (
+      <Form.Group className='numberOfEvents mb-3'>
+          <Form.Label size="sm">Number of Events:</Form.Label>
+        <Form.Control size="sm"
+          type="number"
+          className='event-number'
+          value={numberOfEvents}
+          max={32}
+          min={1}
+          onChange={this.handleChange}
+        />
+      </Form.Group>
 
-  test('change state when text input changes', () => {
-    NumberOfEventsWrapper.setState({
-      query: '5'
-    });
-    const eventObject = { target: { value: '2' }};
-    NumberOfEventsWrapper.find('.numberOfEventsInput').simulate('change', eventObject);
-    expect(NumberOfEventsWrapper.state('query')).toBe('2');
-  });
+    );
+  }
+}
 
-});
+export default NumberOfEvents;
