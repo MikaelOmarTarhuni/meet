@@ -18,8 +18,6 @@ class App extends Component {
       numberOfEvents: 32,
       currentLocation: 'all'
     }
-    
-    // this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
