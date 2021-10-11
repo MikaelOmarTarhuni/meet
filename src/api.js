@@ -17,7 +17,7 @@ import NProgress from 'nprogress';
     return locations;
   };
   
-  const checkToken = async (accessToken) => {
+  export const checkToken = async (accessToken) => {
     const result = await fetch(
       `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
     )
@@ -33,6 +33,12 @@ import NProgress from 'nprogress';
     if (window.location.href.startsWith("http://localhost")) {
       NProgress.done();
       return mockData;
+    }
+
+    if (!navigator.onLine) {
+      const events = localStorage.getItem("lastEvents");
+      NProgress.done();
+      return events?JSON.parse(events).events:[];;
     }
   
   
@@ -100,5 +106,4 @@ export const getAccessToken = async () => {
     return code && getToken(code);
   }
   return accessToken;
-
 }

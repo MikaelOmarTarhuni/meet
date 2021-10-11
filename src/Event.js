@@ -23,10 +23,10 @@ class Event extends Component {
         <Card.Body>
           <Card.Title className='name'>{event.summary}</Card.Title>
           <Card.Subtitle>
-            {/* <p>{new Date(event.start.dateTime).toLocaleDateString
+            <p>{new Date(event.start.dateTime).toLocaleDateString
             ('en-US', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'utc', timeZoneName: 'short' })
             }
-            </p> */}
+            </p>
             <p className="mb-3">
                 @ {event.summary} | {event.location}
             </p>

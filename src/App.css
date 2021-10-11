@@ -15,7 +15,7 @@ ul {
 }
 
 p {
-  margin: 5px 0;
+  margin: 3px 0;
 }
 
 .display-none {
@@ -131,8 +131,9 @@ input[type="number"] {
 }
 
 .Alert {
-  position: fixed;
-  top: 20px;
+  position: sticky;
+  margin: 16px auto 0px;
+  min-height: 25px;
 }
 
 .data-vis-wrapper {
