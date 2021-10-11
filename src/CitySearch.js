@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Form from 'react-bootstrap/Form';
+import { InfoAlert } from './Alert';
 
 class CitySearch extends Component {
   state = {
@@ -10,33 +11,45 @@ class CitySearch extends Component {
 
   handleInputChanged = (event) => {
     const value = event.target.value;
+    this.setState({showSuggestions:true});
     const suggestions = this.props.locations.filter((location) => {
       return location.toUpperCase().indexOf(value.toUpperCase()) > -1;
     });
-    this.setState({ 
-      query: value,
-      suggestions,
-     });
-  }
+    if (suggestions.length === 0) {
+      this.setState({
+        query: value,
+        infoText: 'We can not find the city you are looking for. Please try another city',
+      });
+    } else {
+      return this.setState({
+        query: value,
+        suggestions,
+        infoText:''
+      });
+    }
+  };
 
   handleItemClicked = (suggestion) => {
     this.setState({
       query: suggestion,
-      showSuggestions: false
+      showSuggestions: false,
+      infoText:''
     });
-    // pass the clicked suggestion to the passed updateEvents prop
     this.props.updateEvents(suggestion);
-    // console.log('handleItemClicked', suggestion);
   }
 
   render() {
     return (
-      <Form>
-        <Form.Label>Type City Name or See All Cites:</Form.Label>
-        <Form.Group className="search mb-3">
+      <Form className="CitySearch">
+        <Form.Label className="mb-0">Type City Name or See All Cites:</Form.Label>
+        <Form.Text>
+            <InfoAlert text={this.state.infoText} />
+        </Form.Text>
+        <Form.Group className="search mt-2">
           <Form.Control 
             type="text"
             className="city"
+            placeholder="Search for city"
             value={this.state.query}
             onChange={this.handleInputChanged}
             onFocus={() => {this.setState({ showSuggestions: true }) }}
