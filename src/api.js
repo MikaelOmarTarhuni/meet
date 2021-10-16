@@ -75,6 +75,7 @@ import NProgress from 'nprogress';
 
   const getToken = async (code) => {
     const encodeCode = encodeURIComponent(code);
+    console.log("encoded Code:",encodeCode)
     const { access_token } = await fetch(
       'https://valp1sa45i.execute-api.eu-central-1.amazonaws.com/dev/api/token' + '/' + encodeCode
     )
