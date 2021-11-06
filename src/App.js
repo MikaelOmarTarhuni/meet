@@ -17,7 +17,7 @@ class App extends Component {
       events: [],
       locations: [],
       numberOfEvents: 32,
-      currentLocation: 'all',
+      currentLocation: 'All Cities',
       showWelcomeScreen: undefined
     }
   }
@@ -38,49 +38,68 @@ class App extends Component {
     const isTokenValid = (await checkToken(accessToken)).error ? false : true;
     const searchParams = new URLSearchParams(window.location.search)
     const code = searchParams.get("code");
+    const { numberOfEvents } = this.state;
 
     this.setState({ showWelcomeScreen: !(code || isTokenValid) });
     if ((code || isTokenValid) && this.mounted) {
       getEvents().then((events) => {
         if (this.mounted) {
         this.setState({ 
-          events: events.slice(0, this.state.numberOfEvents), 
-          locations: extractLocations(events) });
-        }
-      });
-    }
-  }
-
-  componentWillUnmount(){
-    this.mounted = false;
-  }
-
-  updateEvents = (location, eventCount) => {
-    const { currentLocation, numberOfEvents } = this.state;
-    if (location) {
-      getEvents().then((events) => {
-        const locationEvents = (location === 'all') 
-        ? events 
-        : events.filter((event) => event.location === location);
-        const filteredEvents = locationEvents.slice(0, numberOfEvents);
-        this.setState({
-          events: filteredEvents,
-          currentLocation: location
+          events: events.slice(0, numberOfEvents), 
+          locations: extractLocations(events) 
         });
-      });
-    } else {
-      getEvents().then((events) => {
-        const locationEvents = (currentLocation === 'all') 
-        ? events 
-        : events.filter((event) => event.location === currentLocation);
-        const filteredEvents = locationEvents.slice(0, eventCount);
+      }
+
+      if (!navigator.onLine) {
         this.setState({
-          events: filteredEvents,
-          numberOfEvents: eventCount
+          offlineAlert:
+            "Offline mode. To view the most current information, please connect to the internet.",
         });
-      });
-    }
+      } else {
+        this.setState({
+          offlineAlert: "",
+        });
+      }
+    });
   }
+}
+
+componentWillUnmount(){
+  this.mounted = false;
+}
+
+updateEvents = (location, eventCount) => {
+  const { currentLocation, numberOfEvents } = this.state;
+  if (location) {
+    getEvents().then((events) => {
+      const locationEvents = (location === 'All Cities') 
+      ? events 
+      : events.filter((event) => event.location === location);
+      const filteredEvents = locationEvents.slice(0, numberOfEvents);
+      this.setState({
+        events: filteredEvents,
+        currentLocation: location
+      });
+    });
+  } else {
+    getEvents().then((events) => {
+      const locationEvents = (currentLocation === 'All Cities') 
+      ? events 
+      : events.filter((event) => event.location === currentLocation);
+      const filteredEvents = locationEvents.slice(0, eventCount);
+      this.setState({
+        events: filteredEvents,
+        numberOfEvents: eventCount
+      });
+    });
+  }
+}
+
+updateNumberOfEvents(eventNumber) {
+  this.setState({ numberOfEvents: eventNumber });
+  const { currentLocation } = this.state;
+  this.updateEvents(currentLocation, eventNumber);
+}
 
   render() {
     if (this.state.showWelcomeScreen === undefined) return <div className="App" />
