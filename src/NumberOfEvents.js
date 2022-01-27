@@ -1,31 +1,47 @@
-import React, { Component } from 'react';
-import Form from 'react-bootstrap/Form';
+import React, { Component } from "react";
+import { ErrorAlert } from "./Alert";
+import { Container, Row, Col } from "react-bootstrap";
 
 class NumberOfEvents extends Component {
-
   state = {
-    eventNumber: 32,
-  }
-
-  handleInputChanged = (event) => {
-    const value = event.target.value;
-    this.setState({ 
-      eventCount: value,
-    });
-    this.props.updateEvents(value);
+    numberOfEvents: 32,
+    infoText: "",
   };
 
-  render() { 
+  handleInputChanged = (event) => {
+    const number = event.target.value;
+    if (number < 1 || number > 32) {
+      this.setState({
+        numberOfEvents: "",
+        infoText: "Enter number between 1 and 32",
+      });
+    } else {
+      this.setState({
+        numberOfEvents: number,
+        infoText: "",
+      });
+    }
+    this.props.updateNumberOfEvents(event.target.value);
+  };
+
+  render() {
     return (
-      <Form.Group className='numberOfEvents mb-3'>
-          <Form.Label size="sm">Number of Events:</Form.Label>
-        <Form.Control size="sm"
-          type="number"
-          className='event-number'
-          value={this.props.input}
-          onChange={this.props.handleChange}
-        />
-      </Form.Group>
+      <Container className="NumberOfEvents">
+        <Row>
+          <Col>
+            <p>Number of events:</p>
+            <input
+              type="number"
+              className="new-number-of-events"
+              value={this.state.numberOfEvents}
+              onChange={this.handleInputChanged}
+            />
+          </Col>
+          <Col>
+            <ErrorAlert text={this.state.infoText} />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

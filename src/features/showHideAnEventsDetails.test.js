@@ -1,58 +1,72 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import App from '../App';
+import React from "react";
+import { shallow } from "enzyme";
+import { mockData } from "../mock-data";
+import EventList from "../EventList";
+import Event from "../Event";
+import { loadFeature, defineFeature } from "jest-cucumber";
 
-import { loadFeature, defineFeature } from 'jest-cucumber';
+const feature = loadFeature("./src/features/showHideAnEventsDetails.feature");
 
-const feature = loadFeature('./src/features/showHideAnEventsDetails.feature');
+defineFeature(feature, (test) => {
+  test("An event element is collapsed by default", ({ given, when, then }) => {
+    given("the user is on the home page", () => {});
 
-defineFeature(feature, test => {
-  test('An event element is collapsed by default.', ({ given, when, then }) => {
-    given('user has not selected show details', () => {
-    });
-    let AppWrapper;
-    when('they see a list of upcoming events', () => {
-      AppWrapper = mount(<App />);
-    });
-
-    then('the details will be hidden by default', () => {
-      AppWrapper.update();
-      expect(AppWrapper.find('.event .event-details')).toHaveLength(0);
-    });
-});
-
-test('User can expand an event to see its details.', ({ given, when, then }) => {
-    let AppWrapper;
-    given('the list of upcoming events are displayed.', async () => {
-      AppWrapper = mount(<App />);
+    let EventListWrapper;
+    when("An eventlist is displayed", () => {
+      EventListWrapper = shallow(<EventList events={mockData} />);
+      expect(EventListWrapper.find(".eventlist")).toHaveLength(1);
     });
 
-    when('the user expands an event.', () => {
-      AppWrapper.update();
-      AppWrapper.find('.event .details-btn').at(0).simulate('click');
+    let EventWrapper;
+    then("the event element is collapsed by default", () => {
+      EventWrapper = shallow(<Event event={mockData[0]} />);
+      let eventDetails = EventWrapper.find(".event .extra-details");
+      expect(EventWrapper.state("collapsed")).toBe(true);
+    });
+  });
+
+  test("User can expand an event to see its details", ({
+    given,
+    when,
+    then,
+  }) => {
+    let EventWrapper;
+    given(
+      "the user is on the main page and list of events has been loaded",
+      () => {
+        EventWrapper = shallow(<Event event={mockData[0]} />);
+        expect(EventWrapper.state("collapsed")).toBe(true);
+      }
+    );
+
+    when("the user clicks on the show-details-button of an event", () => {
+      const showDetailsButton = EventWrapper.find(".show-details-btn");
+      showDetailsButton.simulate("click");
     });
 
-    then('the details of the event will be displayed.', () => {
-      expect(AppWrapper.find('.event-details')).toHaveLength(1);
+    then("the event element will be expanded to show the event details", () => {
+      expect(EventWrapper.state("collapsed")).toBe(false);
     });
-});
+  });
 
-
-test('User can collapse an event to hide its details.', ({ given, when, then }) => {
-    let AppWrapper;
-    given('the details for upcoming events are displayed', async () => {
-      AppWrapper = await mount(<App />);
-      AppWrapper.update();
-      AppWrapper.find('.event .details-btn').at(0).simulate('click');
-    });
-
-    when('the user collapses the event', () => {
-      AppWrapper.update();
-      AppWrapper.find('.event .details-btn').at(0).simulate('click');
+  test("User can collapse an event to hide its details", ({
+    given,
+    when,
+    then,
+  }) => {
+    let EventWrapper;
+    given("the user has expanded an event to see its details", () => {
+      EventWrapper = shallow(<Event event={mockData[0]} />);
+      EventWrapper.setState({ collapsed: false });
     });
 
-    then('the details of the event will be hidden', () => {
-      expect(AppWrapper.find('.event-details')).toHaveLength(0);
+    when("the user has clicked on hide-details-button", () => {
+      const HideDetailsButton = EventWrapper.find(".hide-details-btn");
+      HideDetailsButton.simulate("click");
+    });
+
+    then("the event details will be hidden", () => {
+      expect(EventWrapper.state("collapsed")).toBe(true);
     });
   });
 });

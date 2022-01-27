@@ -1,49 +1,55 @@
-import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col';
+import React, { Component } from "react";
 
 class Event extends Component {
   state = {
-    showDetails: false
-  }
+    event: {},
+    collapsed: true,
+  };
 
-  showDetails = () => {
+  handleClick = () => {
     this.setState({
-      showDetails: !this.state.showDetails
-    })
-  }
+      collapsed: !this.state.collapsed,
+    });
+  };
 
   render() {
-    // props passed from EventList Component
     const { event } = this.props;
+    const { collapsed } = this.state;
+    return (
+      <div className="event">
+        <div className="summary">{event.summary}</div>
+        <div className="event-body">
+          <p className="start-date">
+            {event.start.dateTime} ({event.start.timeZone})
+          </p>
 
-    return <Col>
-        <Card className='event m-1 p-2' bg='light' border='dark'>
-        <Card.Body>
-          <Card.Title className='name'>{event.summary}</Card.Title>
-          <Card.Subtitle>
-            <p>{new Date(event.start.dateTime).toLocaleDateString
-            ('en-US', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'utc', timeZoneName: 'short' })
-            }
-            </p>
-            <p className="mb-3">
-                @ {event.summary} | {event.location}
-            </p>
-          </Card.Subtitle>
-          {this.state.showDetails && (
-            <div className='event-details'>
-              <Card.Subtitle>About event:</Card.Subtitle>
-              <a href={event.htmlLink}>See Details on Google Calendar</a>
-                <Card.Text className='description mb-2'>{event.description}</Card.Text>
+          <p className="location">
+            @{event.summary} | {event.location}
+          </p>
+
+          {!collapsed && (
+            <div
+              className={`extra-details ${
+                this.state.collapsed ? "hide" : "show"
+              }`}
+            >
+              <br />
+              <h6 className="about">About Event</h6>
+              <a href={event.htmlLink} target="_blank" rel="noreferrer">
+                See details in Google calendar
+              </a>
+              <p className="event-description">{event.description}</p>
             </div>
           )}
-            <br />
-          <Button variant="info" className='details-btn m-2 p-1' onClick={this.showDetails}>{this.state.showDetails ? 'Hide Details' : 'Show Details'}</Button>
-        </Card.Body>
-      </Card>
-    </Col>
-    
+          <button
+            className={`${collapsed ? "show" : "hide"}-details-btn`}
+            onClick={this.handleClick}
+          >
+            {collapsed ? "Show Details" : "Hide-Details"}
+          </button>
+        </div>
+      </div>
+    );
   }
 }
 

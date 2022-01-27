@@ -1,9 +1,7 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:500);
 .App {
   text-align: center;
-  padding: 2% 5%;
+  background-color: rgb(144, 207, 238);
 }
-
 
 .App * {
   box-sizing: border-box;
@@ -15,7 +13,7 @@ ul {
 }
 
 p {
-  margin: 3px 0;
+  margin: 5px 0;
 }
 
 .display-none {
@@ -41,7 +39,7 @@ input[type="number"] {
   width: 250px;
 }
 
-.search {
+.CitySearch {
   display: flex;
   flex-direction: column;
   flex-basis: 300px;
@@ -62,7 +60,7 @@ input[type="number"] {
 }
 
 .suggestions > li {
-  text-align: left;
+  text-align: center;
   padding: 8px 6px 8px 10px;
   background-color: #eee;
   cursor: default;
@@ -90,12 +88,11 @@ input[type="number"] {
   position: absolute;
   right: 5px;
   bottom: 5px;
-  /* padding: 5px 8px; */
+  padding: 5px 8px;
   border-radius: 4px;
   outline: none;
   cursor: pointer;
 }
-
 
 .name {
   font-size: 18px;
@@ -131,22 +128,8 @@ input[type="number"] {
 }
 
 .Alert {
-  position: sticky;
-  margin: 16px auto 0px;
-  min-height: 25px;
-}
-
-.data-vis-wrapper {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-.data-vis-wrapper .recharts-responsive-container {
-  min-width: 100%;
-  display: flex;
-}
-.recharts-surface {
-  overflow: visible;
+  position: fixed;
+  top: 20px;
 }
 
 .login-button {
@@ -201,16 +184,10 @@ input[type="number"] {
   font-family: "Roboto";
 }
 
+.number-of-events {
+  margin-bottom: 20px;
+}
 
-
-@media only screen and (min-width: 992px) {
-  .data-vis-wrapper {
-    flex-direction: row;
-  }
-  .data-vis-wrapper .recharts-responsive-container {
-    flex-basis: 50%;
-    max-width: 50%;
-    min-width: auto;
-    margin: 0 auto;
-  }
+.eventlist-col {
+  margin-top: 40px;
 }

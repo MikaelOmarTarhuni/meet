@@ -1,24 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
-
-import * as atatus from 'atatus-spa';
-
-atatus.config('2deb77f758f14657a48471826c9591da').install();
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import reportWebVitals from "./reportWebVitals";
+import * as atatus from "atatus-spa";
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
+//serviceWorkerRegistration.unregister();
 serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
@@ -26,5 +24,7 @@ serviceWorkerRegistration.register();
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-atatus.notify(new Error('Test Atatus Setup'));
+// testing error event
+atatus.config("f312b1402b28473aa55be8174476bfab").install();
 
+//atatus.notify(new Error("Test Atatus Setup"));

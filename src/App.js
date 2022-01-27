@@ -1,126 +1,116 @@
-import React, { Component } from 'react';
-import './App.css';
-import EventList from './EventList';
-import CitySearch from './CitySearch';
-import NumberOfEvents from './NumberOfEvents';
-import { extractLocations, getEvents, checkToken, getAccessToken } from './api';
-import './nprogress.css';
-import Container from 'react-bootstrap/Container';
-import { WarningAlert } from './Alert';
-import WelcomeScreen from './WelcomeScreen';
-
-
+import React, { Component } from "react";
+import "./App.css";
+import "./nprogress.css";
+import EventList from "./EventList";
+import CitySearch from "./CitySearch";
+import NumberOfEvents from "./NumberOfEvents";
+import { extractLocations, getEvents, checkToken, getAccessToken } from "./api";
+import { Container, Row, Col } from "react-bootstrap";
+import WelcomeScreen from "./WelcomeScreen";
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      events: [],
-      locations: [],
-      numberOfEvents: 32,
-      currentLocation: 'All Cities',
-      showWelcomeScreen: undefined
-    }
-  }
-
+  state = {
+    events: [],
+    locations: [],
+    numberOfEvents: 32,
+    showWelcomeScreen: undefined,
+  };
   async componentDidMount() {
     this.mounted = true;
-    if (!navigator.onLine) {
-      this.setState({
-        warningText: 'Currently not online. List may not be up to date.',
-      });
-    } else {
-      this.setState({
-        warningText: ''
-      });
-    }
-
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem("access_token");
     const isTokenValid = (await checkToken(accessToken)).error ? false : true;
-    const searchParams = new URLSearchParams(window.location.search)
+    const searchParams = new URLSearchParams(window.location.search);
     const code = searchParams.get("code");
-    const { numberOfEvents } = this.state;
 
     this.setState({ showWelcomeScreen: !(code || isTokenValid) });
     if ((code || isTokenValid) && this.mounted) {
       getEvents().then((events) => {
         if (this.mounted) {
-        this.setState({ 
-          events: events.slice(0, numberOfEvents), 
-          locations: extractLocations(events) 
+          this.setState({
+            events: events.slice(0, this.state.numberOfEvents),
+            locations: extractLocations(events),
+          });
+        }
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  updateEvents = (location) => {
+    getEvents().then((events) => {
+      const locationEvents =
+        location === "all"
+          ? events
+          : events.filter((event) => event.location === location);
+      const { numberOfEvents } = this.state;
+      if (this.mounted) {
+        this.setState({
+          events: locationEvents.slice(0, numberOfEvents),
+          currentLocation: location,
         });
       }
-
-      if (!navigator.onLine) {
-        this.setState({
-          offlineAlert:
-            "Offline mode. To view the most current information, please connect to the internet.",
-        });
-      } else {
-        this.setState({
-          offlineAlert: "",
-        });
-      }
     });
-  }
-}
+  };
 
-componentWillUnmount(){
-  this.mounted = false;
-}
-
-updateEvents = (location, eventCount) => {
-  const { currentLocation, numberOfEvents } = this.state;
-  if (location) {
-    getEvents().then((events) => {
-      const locationEvents = (location === 'All Cities') 
-      ? events 
-      : events.filter((event) => event.location === location);
-      const filteredEvents = locationEvents.slice(0, numberOfEvents);
-      this.setState({
-        events: filteredEvents,
-        currentLocation: location
-      });
+  updateNumberOfEvents = (eventCount) => {
+    const { currentLocation } = this.state;
+    this.setState({
+      numberOfEvents: eventCount,
     });
-  } else {
-    getEvents().then((events) => {
-      const locationEvents = (currentLocation === 'All Cities') 
-      ? events 
-      : events.filter((event) => event.location === currentLocation);
-      const filteredEvents = locationEvents.slice(0, eventCount);
-      this.setState({
-        events: filteredEvents,
-        numberOfEvents: eventCount
-      });
-    });
-  }
-}
+    this.updateEvents(currentLocation, eventCount);
+  };
 
-updateNumberOfEvents(eventNumber) {
-  this.setState({ numberOfEvents: eventNumber });
-  const { currentLocation } = this.state;
-  this.updateEvents(currentLocation, eventNumber);
-}
+  getData = () => {
+    const { locations, events } = this.state;
+    const data = locations.map((location) => {
+      const number = events.filter(
+        (event) => event.location === location
+      ).length;
+      const city = location.split(", ").shift();
+      return { city, number };
+    });
+    return data;
+  };
 
   render() {
-    if (this.state.showWelcomeScreen === undefined) return <div className="App" />
-    const { numberOfEvents } = this.state
+    const { events } = this.state;
+    if (this.state.showWelcomeScreen === undefined)
+      return <div className="App" />;
+
     return (
-      <div>
-        <Container className="App" bg="dark">
-          <WarningAlert text={this.state.warningText} />
-          <h1>Meet App</h1>
-          <CitySearch 
-          locations={this.state.locations} 
-          updateEvents={this.updateEvents} />
-          <NumberOfEvents 
-          numberOfEvents={numberOfEvents}
-          updateEvents={this.updateEvents} />
-          <EventList 
-          events={this.state.events} />
-          <WelcomeScreen showWelcomeScreen={this.state.showWelcomeScreen}
-          getAccessToken={() => { getAccessToken() }} />
-        </Container>
-      </div>
+      <Container className="App" fluid>
+        <Row>
+          <Col>
+            <h1>Meet App</h1>
+            <CitySearch
+              locations={this.state.locations}
+              updateEvents={this.updateEvents}
+            />
+          </Col>
+          <Col className="number-of-events">
+            <NumberOfEvents
+              numberOfEvents={this.state.numberOfEvents}
+              updateNumberOfEvents={this.updateNumberOfEvents}
+            />
+          </Col>
+          <h4>Events in each city</h4>
+          <Col className="data-vis-wrapper">
+          </Col>
+          <Col className="eventlist-col">
+            <EventList events={this.state.events} />
+          </Col>
+          <Col>
+            <WelcomeScreen
+              showWelcomeScreen={this.state.showWelcomeScreen}
+              getAccessToken={() => {
+                getAccessToken();
+              }}
+            />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
