@@ -1,6 +1,8 @@
+body {
+  background-color: rgb(144, 207, 238);
+}
 .App {
   text-align: center;
-  background-color: rgb(144, 207, 238);
 }
 
 .App * {
