@@ -1,5 +1,5 @@
 body {
-  background-color: rgb(144, 207, 238);
+  background-color: rgb(255, 255, 255);
 }
 .App {
   text-align: center;
@@ -135,6 +135,21 @@ input[type="number"] {
   top: 20px;
 }
 
+.data-vis-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.data-vis-wrapper .recharts-responsive-container {
+  min-width: 100%;
+  display: flex;
+}
+.recharts-surface {
+  overflow: visible;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
 .login-button {
   color: #494949;
   text-transform: uppercase;
@@ -185,6 +200,18 @@ input[type="number"] {
   font-size: 14px;
   letter-spacing: 0.2px;
   font-family: "Roboto";
+}
+
+@media only screen and (min-width: 992px) {
+  .data-vis-wrapper {
+    flex-direction: row;
+  }
+  .data-vis-wrapper .recharts-responsive-container {
+    flex-basis: 50%;
+    max-width: 50%;
+    min-width: auto;
+    margin: 0 auto;
+  }
 }
 
 .number-of-events {
